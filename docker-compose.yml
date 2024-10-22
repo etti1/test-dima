@@ -1,0 +1,31 @@
+services:
+  php:
+    container_name: dima_php
+    build:
+      context: docker/php
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./symfony:/dima
+      - ./.git:/dima/.git
+    networks:
+      - dima_api
+
+  nginx:
+    container_name: dima_nginx
+    build:
+      context: docker/nginx
+    restart: always
+    volumes:
+      - ./symfony/public:/dima/public
+    env_file:
+      - .env
+    ports:
+      - "88:88"
+    depends_on:
+      - php
+    networks:
+      - dima_api
+networks:
+  dima_api:
